@@ -1,0 +1,17 @@
+library(car)
+library(carData)
+
+#首先读取数据并构建回归模型
+reg2=lm_robust(price~sqrft+log(lotsize)+colonial,data = A, se_type = "stata")
+
+#测试H0：conefficient of ln(lotsize) = 31
+linearHypothesis(reg2,c("log(lotsize)=31"), test=c("F"))
+
+#patial F-test, joint test
+A = read.csv('hprice1.csv',header = T) %>%
+  mutate(x0=colonial/10)
+
+reg4 = lm_robust(price ~ sqrft + log(lotsize)+x0,data = A, se_type = "stata")
+summary(reg4)
+
+linearHypothesis(reg4,c("log(lotsize)=31","sqrft = x0"), test=c("F"))
